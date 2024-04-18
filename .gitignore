@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
 /dist
+mongo
 
 
 # local env files

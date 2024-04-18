@@ -2,6 +2,7 @@ const express = require('express');
 const pino = require('pino');
 const routes = require('./routes');
 const { PORT } = require('./config')
+const dbConnect = require('./config/db');
 
 const server = express();
 const logger = pino();
@@ -12,4 +13,5 @@ server.use(routes);
 
 server.listen(PORT, () => {
     logger.info(`Server started on port ${PORT}`);
+    dbConnect();
 });

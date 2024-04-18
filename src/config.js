@@ -12,8 +12,8 @@ module.exports = {
     MONGODB: {
         USERNAME: process.env.MONGO_USERNAME || null,
         PASSWORD: process.env.MONGO_PASSWORD || null,
-        HOSTNAME: process.env.MONGO_HOSTNAME || null,
-        PORT: process.env.MONGO_PORT || null,
-        DB: process.env.MONGO_DB || null,
+        HOSTNAME: process.env.MONGO_HOSTNAME || 'localhost',
+        PORT: process.env.MONGO_PORT || 27017,
+        DB: process.env.MONGO_DB || 'logistica',
     }
 }

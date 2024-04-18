@@ -1,15 +1,9 @@
-const Order = require('../models/order');
+const Order = require('../models/orderModel');
 
-const createOrder = async (data) => {
-    return await Order.updateOne(
-        { 
-            userId: data.userId, 
-            orderId: data.orderId, 
-            productId: data.productId 
-        }, 
-        data, 
-        { upsert: true }
-    );
-}
-
-module.exports = { createOrder };
+const createOrder = async (orderData) => {
+    const newOrder = new Order(orderData);
+    await newOrder.save();
+    return newOrder;
+};
+  
+module.exports = createOrder;

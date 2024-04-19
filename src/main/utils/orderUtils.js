@@ -5,6 +5,7 @@ const groupOrdersByUser = async (rawOrders) => {
         const validOrders = order.orderId ? [order] : [];
 
         acc[user_id] = acc[user_id] || { user_id, name, orders: [] };
+        acc[user_id].orders = acc[user_id].orders || [];
 
         for (const order of validOrders) {
             const order_id = order.orderId;
@@ -34,7 +35,6 @@ const formatTotals = (groupOrders) => {
             order.total = String(order.total.toFixed(2));
             order.products.forEach(product => product.value = String(product.value.toFixed(2)));
         });
-        
     });
 }
 

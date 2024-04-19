@@ -20,12 +20,9 @@ const createOrder = async (orders) => {
             orderDate: formatData(order[5], 'YYYY-MM-DD')
         });
 
-        try {
-            await saveOrder(newOrder);
-            logger.info(`[orderService][createOrder] Order created: ${newOrder.orderId}`);
-        } catch (error) {
-            logger.error(`[orderService][createOrder] Error creating order: ${error}`);
-        }
+        await saveOrder(newOrder);
+        logger.info(`[orderService][createOrder] Order created: ${newOrder.orderId}`);
+
     }
 
 }
@@ -38,7 +35,19 @@ module.exports = {
         logger.info(`[orderService][processFile] File uploaded: ${file.originalname}, processing...`);
         const rows = await readFile(file);
 
-        const fields = rows.flatMap(parseRow);
+        if(!rows) {
+            throw new Error(`File ${file.originalname} is empty`);
+        }
+
+        const fields = rows.flatMap(row => {
+            const parsedData = parseRow(row);
+            if (!parsedData) {
+                throw new Error(`Error on data parsing: Invalid data format`);
+            }
+            return parsedData;
+        });
+
+
         await createOrder(fields);
 
         return(`File uploaded succesfully: ${file.originalname}`);
@@ -58,6 +67,9 @@ module.exports = {
 
     async findOrderById(id) {
         const rawOrders = await getOrdersById(id);
+        if (!rawOrders.length) {
+            return [];
+        }
         let groupOrders = await groupOrdersByUser(rawOrders)
         formatTotals(groupOrders);
 
@@ -66,6 +78,9 @@ module.exports = {
 
     async findOrdersByDataRange(startDate, endDate) {
         const rawOrders = await getOrdersByDataRange(startDate, endDate);
+        if (!rawOrders.length) {
+            return [];
+        }
         let groupOrders = await groupOrdersByUser(rawOrders)
         formatTotals(groupOrders);
 

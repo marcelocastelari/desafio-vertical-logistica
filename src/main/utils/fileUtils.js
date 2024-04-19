@@ -22,10 +22,10 @@ const readFile = (file) => {
 
     if (!data) {
         logger.info(`[orderService][readFile] File ${file.originalname} is empty.`);
-        throw new Error(`File is ${file.originalname} empty.`);
+        return new Error("File is empty.");
     }
 
-    const rows = data.split('\n');
+    const rows = data ? data.split('\n') : [];
     return rows;
 }
 

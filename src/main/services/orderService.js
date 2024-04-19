@@ -46,6 +46,10 @@ module.exports = {
 
     async listOrders() {
         const rawOrders = await getOrders();
+        if (!rawOrders.length) {
+            return [];
+        }
+
         let groupOrders = await groupOrdersByUser(rawOrders)
         formatTotals(groupOrders);
 

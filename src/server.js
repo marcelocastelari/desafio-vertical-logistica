@@ -1,8 +1,8 @@
 const express = require('express');
 const pino = require('pino');
-const routes = require('./routes');
+const routes = require('./main/routes');
 const { PORT } = require('./config')
-const dbConnect = require('./config/db');
+const dbConnect = require('./main/config/db');
 
 const server = express();
 const logger = pino();

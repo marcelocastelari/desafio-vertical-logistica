@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const pino = require('pino');
 const logger = pino();
 
-const { MONGODB: { USERNAME, PASSWORD, HOSTNAME, PORT, DB }, MONGODB } = require('../../config');
+const { MONGODB: { USERNAME, PASSWORD, HOSTNAME, PORT, DB } } = require('../../../config');
 const mongo_connection_string = USERNAME 
 ? `mongodb://${USERNAME}:${PASSWORD}@${HOSTNAME}:${PORT}/${DB}`
 : `mongodb://${HOSTNAME}:${PORT}/${DB}`;

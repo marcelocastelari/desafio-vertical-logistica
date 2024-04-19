@@ -1,32 +1,70 @@
 const pino = require('pino');
 const logger = pino();
+const { saveOrder, getOrders, getOrdersById, getOrdersByDataRange } = require('../repositories/orderRepository');
+const Order = require('../models/orderModel');
+const { validateFile, readFile, parseRow } = require('../utils/fileUtils');
+const { getUUID } = require('../utils/uuidUtils');
+const { formatData } = require('../utils/dateUtils');
+const { groupOrdersByUser, formatTotals } = require('../utils/orderUtils');
 
-const readFile = (file)  => {
-    const data = file.buffer.toString('utf-8');
+const createOrder = async (orders) => {
+    for(const order of orders) {
+        const uuid = getUUID();
+        const newOrder = new Order({
+            uuid: uuid,
+            userId: order[0],
+            userName: order[1],
+            orderId: order[2],
+            productId: order[3],
+            productValue: order[4],
+            orderDate: formatData(order[5], 'YYYY-MM-DD')
+        });
 
-    if(!data) {
-        logger.info(`[uploadService][readFile] File ${file.originalname} is empty.`);
-        throw new Error("File is empty.");
+        try {
+            await saveOrder(newOrder);
+            logger.info(`[orderService][createOrder] Order created: ${newOrder.orderId}`);
+        } catch (error) {
+            logger.error(`[orderService][createOrder] Error creating order: ${error}`);
+        }
     }
 
-    const rows = data.split('\n');
-    return rows;
 }
 
 module.exports = {
-    processFile(file) {
-        if(!file) {
-            logger.info(`[uploadService][processFile] No file was uploaded.`);
-            throw new Error("No file was uploaded.")
-        }
-    
-        if(file.mimetype !== 'text/plain') {
-            logger.info(`[uploadService][processFile] File ${file.originalname} is not a text file.`);
-            throw new Error("File is not a text file.");
-        }
-    
-        logger.info(`[uploadService][processFile] File uploaded: ${file.originalname}, processing...`);
-        const data = readFile(file);
-        return(`File uploaded ${file.originalname}`);
+    async processFile(file) {
+
+        await validateFile(file);
+
+        logger.info(`[orderService][processFile] File uploaded: ${file.originalname}, processing...`);
+        const rows = await readFile(file);
+
+        const fields = rows.flatMap(parseRow);
+        await createOrder(fields);
+
+        return(`File uploaded succesfully: ${file.originalname}`);
+    },
+
+    async listOrders() {
+        const rawOrders = await getOrders();
+        let groupOrders = await groupOrdersByUser(rawOrders)
+        formatTotals(groupOrders);
+
+        return Object.values(groupOrders);
+    },
+
+    async findOrderById(id) {
+        const rawOrders = await getOrdersById(id);
+        let groupOrders = await groupOrdersByUser(rawOrders)
+        formatTotals(groupOrders);
+
+        return Object.values(groupOrders);
+    },
+
+    async findOrdersByDataRange(startDate, endDate) {
+        const rawOrders = await getOrdersByDataRange(startDate, endDate);
+        let groupOrders = await groupOrdersByUser(rawOrders)
+        formatTotals(groupOrders);
+
+        return Object.values(groupOrders);
     }
 }

@@ -41,6 +41,14 @@ npm run build
 
 ## Documentação da API
 
+### Realiza upload do arquivo
+```http
+  POST /process-file
+```
+| Tipo  | Body Key       | Value                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `form-data`      | `data` | Arquivo .txt |
+
 #### Retorna todos os pedidos
 
 ```http

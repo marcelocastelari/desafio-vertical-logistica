@@ -22,6 +22,18 @@ npm install
 yarn install
 ```
 
+## Envs
+
+O projeto por padrão se não encontrar um arquivo .env irá rodar na Porta **8000**.
+
+Rodando localmente o endereço será:
+
+```http
+localhost:8000/
+```
+
+Para configurar a porta, basta criar o arquivo .env na raiz do projeto e configurá-lo com as envs necessárias. No projeto existe o arquivo .***env.example*** para exemplificar como inserir as Envs necessárias.
+
 ## Compilar para desenvolvimento
 ```
 npm start
@@ -33,9 +45,9 @@ docker compose up
 docker compose down
 ```
 
-## Compilar para produção
+## Rodar testes
 ```
-npm run build
+npm test
 ```
 
 

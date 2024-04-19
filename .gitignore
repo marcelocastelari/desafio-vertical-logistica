@@ -2,6 +2,7 @@
 node_modules
 /dist
 mongo
+coverage
 
 
 # local env files

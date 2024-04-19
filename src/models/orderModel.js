@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { v4: uuidv4 } = require('uuid');
 
 const orderSchema = new mongoose.Schema({
     uuid: { type: String, require: true, unique: true },
